@@ -22,7 +22,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 	}
 	steps, err := strconv.Atoi(parsedString[0])
 	if err != nil {
-		return 0, 0, fmt.Errorf("convertation error: %v", err)
+		return 0, 0, fmt.Errorf("convertation error: %w", err)
 	}
 	if steps <= 0 {
 		return 0, 0, errors.New("steps must be more than zero")
@@ -30,8 +30,10 @@ func parsePackage(data string) (int, time.Duration, error) {
 
 	duration, err := time.ParseDuration(parsedString[1])
 	if err != nil {
-		return 0, 0, fmt.Errorf("parsing error: %v", err)
-
+		return 0, 0, fmt.Errorf("parsing error: %w", err)
+	}
+	if duration <= 0 {
+		return 0, 0, errors.New("duration must be more than zero")
 	}
 	return steps, duration, nil
 }
@@ -46,7 +48,7 @@ func DayActionInfo(data string, weight, height float64) string {
 	// ваш код ниже
 	steps, duration, err := parsePackage(data)
 	if err != nil {
-		fmt.Errorf("Parsing error: %v", err)
+		fmt.Errorf("Parsing error: %w", err)
 		return ""
 	}
 	if steps <= 0 {

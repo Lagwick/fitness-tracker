@@ -23,12 +23,15 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 	}
 	steps, err := strconv.Atoi(parts[0])
 	if err != nil {
-		return 0, "", 0, fmt.Errorf("convertation error: %v", err)
+		return 0, "", 0, fmt.Errorf("convertation error: %w", err)
 	}
 	activity := parts[1]
 	duration, err := time.ParseDuration(parts[2])
 	if err != nil {
-		return 0, "", 0, fmt.Errorf("parsing error: %v", err)
+		return 0, "", 0, fmt.Errorf("parsing error: %w", err)
+	}
+	if duration <= 0 {
+		return 0, "", 0, errors.New("duration must be more than zero")
 	}
 	return steps, activity, duration, nil
 }
@@ -70,10 +73,10 @@ func TrainingInfo(data string, weight, height float64) string {
 	// ваш код ниже
 	stepsDone, trainingType, timeOftraining, err := parseTraining(data)
 	if err != nil {
-		return fmt.Sprintf("Parsing error: %v", err)
+		return fmt.Sprintf("Parsing error: %w", err)
 	}
 	if stepsDone <= 0 {
-		return fmt.Sprintf("not enough steps: %v", err)
+		return fmt.Sprintf("not enough steps: %w", err)
 	}
 	distanceCovered := distance(stepsDone)
 	avSpeed := meanSpeed(stepsDone, timeOftraining)
